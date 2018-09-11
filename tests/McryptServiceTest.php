@@ -2,6 +2,7 @@
 
 namespace MBLSolutions\Tests;
 
+use MBLSolutions\Exceptions\RequestInvalidException;
 use MBLSolutions\McryptService;
 use PHPUnit\Framework\TestCase;
 
@@ -26,7 +27,19 @@ class McryptServiceTest extends TestCase
     }
 
     /** @test **/
-    public function can_decrypt_an_md5_string()
+    public function response_containing_error_throws_validation_exception()
+    {
+        $this->expectException(RequestInvalidException::class);
+        $this->expectExceptionMessage('Secret key length must be 24 when using ECB mode.');
+
+        $encrypted = '0sQg7vz6S9g='; // password
+        $secret = 'x';
+
+        $this->mcryptService->decrypt($encrypted, $secret);
+    }
+
+    /** @test **/
+    public function can_decrypt_an_mcrypt_encrypted_string()
     {
         $encrypted = '0sQg7vz6S9g='; // password
         $secret = 'dGhpc2lzYXR3ZW50eWZvdXJjaGFya2V5'; // thisisatwentyfourcharkey
@@ -49,6 +62,17 @@ class McryptServiceTest extends TestCase
 
         // The base 64 Representation of the unencrypted string
         $this->assertEquals('password', $decoded);
+    }
+
+    /** @test */
+    public function can_encrypt_a_string()
+    {
+        $string = base64_encode('password');
+        $secret = base64_encode('thisisatwentyfourcharkey'); // thisisatwentyfourcharkey
+
+        $data = $this->mcryptService->encrypt($string, $secret);
+
+        $this->assertEquals('0sQg7vz6S9g=', $data);
     }
 
 }
