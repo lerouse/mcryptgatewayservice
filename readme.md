@@ -15,7 +15,7 @@ Data passed in should be bse64 encoded
 ### Decryption
 
 ```php
-$mcryptService = new MBLSolutions\McryptService('https://example.execute-api.eu-west-1.amazonaws.com', 'production');
+$mcryptService = new MBLSolutions\McryptService('https://example.execute-api.eu-west-1.amazonaws.com', 'prod');
 
 $encrypted = base64_encode('password'); // password
 $secret = base64_encode('thisisatwentyfourcharkey');
