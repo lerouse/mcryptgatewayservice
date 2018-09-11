@@ -6,7 +6,7 @@ Allows versions of PHP to use decrypt Mcrypt encrypted strings.
 
 ## Installation with Composer
 
-``` composer require vlucas/phpdotenv ```
+``` composer require mblsolutions/mcryptgatewayservice ```
 
 ## Usage
 
