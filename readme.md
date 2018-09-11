@@ -1,5 +1,7 @@
 # MBL Solutions Mcrypt Gateway Service
 
+[![CircleCI](https://circleci.com/gh/mblsolutions/mcryptgatewayservice.svg?style=svg)](https://circleci.com/gh/mblsolutions/mcryptgatewayservice)
+
 Service to interact with the MBL Solutions Mcrypt Gateway Service.
 
 Allows versions of PHP to use decrypt Mcrypt encrypted strings.
