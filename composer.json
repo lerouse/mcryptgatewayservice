@@ -1,0 +1,38 @@
+{
+  "name": "mblsolutions/mcryptgatewayservice",
+  "description": "Package to allow interaction to MBL Solutions Mcrypt Gateway",
+  "keywords": ["mblsolutions", "mcrypt", "gateway", "service"],
+  "license": "MIT",
+  "support": {
+    "issues": "https://github.com/mblsolutions/mcryptgatewayservice/issues",
+    "source": "https://github.com/mblsolutions/mcryptgatewayservice"
+  },
+  "authors": [
+
+    {
+      "name": "MBL Solutions Ltd.",
+      "email": "support@mblsolutions.co.uk"
+    }
+  ],
+  "require": {
+    "php": ">7.0.0",
+    "ext-json": "*",
+    "guzzlehttp/guzzle": "^6.3"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~7.0",
+    "vlucas/phpdotenv": "~2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "MBLSolutions\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "MBLSolutions\\Tests\\": "tests/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
