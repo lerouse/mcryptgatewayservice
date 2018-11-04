@@ -2,7 +2,7 @@
 
 namespace MBLSolutions\Tests;
 
-use MBLSolutions\Exceptions\RequestInvalidException;
+use MBLSolutions\Exceptions\ResponseInvalidException;
 use MBLSolutions\McryptService;
 use PHPUnit\Framework\TestCase;
 
@@ -29,8 +29,7 @@ class McryptServiceTest extends TestCase
     /** @test **/
     public function response_containing_error_throws_validation_exception()
     {
-        $this->expectException(RequestInvalidException::class);
-        $this->expectExceptionMessage('Secret key length must be 24 when using ECB mode.');
+        $this->expectException(ResponseInvalidException::class);
 
         $encrypted = '0sQg7vz6S9g='; // password
         $secret = 'x';
