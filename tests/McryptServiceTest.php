@@ -23,7 +23,10 @@ class McryptServiceTest extends TestCase
     /** {@inheritdoc} **/
     public function setUp()
     {
-        $this->mcryptService = new McryptService(getenv('MCRYPT_SERVICE_ENDPOINT'), getenv('MCRYPT_SERVICE_STAGE'));
+        $this->mcryptService = new McryptService(
+            getenv('MCRYPT_GATEWAY_ENDPOINT'),
+            getenv('MCRYPT_GATEWAY_STAGE'))
+        ;
     }
 
     /** @test **/
