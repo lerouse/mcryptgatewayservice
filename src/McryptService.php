@@ -112,7 +112,7 @@ class McryptService
      */
     private function getGuzzleClient(): GuzzleClient
     {
-        if (is_null($this->client)) {
+        if ($this->client === null) {
             $this->client = new GuzzleClient([
                 'base_uri' => $this->endpoint,
                 'http_errors' => false,
@@ -134,7 +134,7 @@ class McryptService
     {
         $originalResponse = json_decode($response->getBody()->getContents(), true);
 
-        if ($response->getStatusCode() != 200) {
+        if ($response->getStatusCode() !== 200) {
             throw new ResponseInvalidException($originalResponse['error'] ?? $response->getReasonPhrase());
         }
 
