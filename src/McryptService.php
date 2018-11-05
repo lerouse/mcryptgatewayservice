@@ -123,7 +123,7 @@ class McryptService
     }
 
     /**
-     * Validate and return the expected response data
+     * Validate and return the expected response data or exception
      *
      * @param Response $response
      * @param string $key
