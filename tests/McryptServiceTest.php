@@ -14,8 +14,8 @@ class McryptServiceTest extends TestCase
     /** {@inheritdoc} **/
     public static function setUpBeforeClass()
     {
-        if (file_exists(__DIR__.'/../.env')) {
-            $dotenv = new \Dotenv\Dotenv(__DIR__.'/../');
+        if (file_exists(__DIR__ . '/../.env')) {
+            $dotenv = new \Dotenv\Dotenv(__DIR__ . '/../');
             $dotenv->load();
         }
     }
@@ -25,13 +25,14 @@ class McryptServiceTest extends TestCase
     {
         $this->mcryptService = new McryptService(
             getenv('MCRYPT_GATEWAY_ENDPOINT'),
-            getenv('MCRYPT_GATEWAY_STAGE'))
-        ;
+            getenv('MCRYPT_GATEWAY_STAGE')
+        );
     }
 
-    /** @test **/
+    /** @test */
     public function response_containing_error_throws_validation_exception()
     {
+        var_dump(getenv('MCRYPT_GATEWAY_ENDPOINT'));
         $this->expectException(ResponseInvalidException::class);
 
         $encrypted = '0sQg7vz6S9g='; // password
@@ -40,7 +41,7 @@ class McryptServiceTest extends TestCase
         $this->mcryptService->decrypt($encrypted, $secret);
     }
 
-    /** @test **/
+    /** @test */
     public function can_decrypt_an_mcrypt_encrypted_string()
     {
         $encrypted = '0sQg7vz6S9g='; // password
@@ -52,7 +53,7 @@ class McryptServiceTest extends TestCase
         $this->assertEquals('cGFzc3dvcmQ=', $data);
     }
 
-    /** @test **/
+    /** @test */
     public function decrypted_string_returns_a_base64_encoded_string()
     {
         $encrypted = '0sQg7vz6S9g='; // password
