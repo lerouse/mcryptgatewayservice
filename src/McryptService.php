@@ -98,7 +98,7 @@ class McryptService
             ],
             'json' => [
                 'data' => $data,
-                'secret' => $secret
+                'secret' => $secret,
             ]
         ];
 
