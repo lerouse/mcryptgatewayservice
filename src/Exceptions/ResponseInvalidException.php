@@ -4,7 +4,7 @@ namespace MBLSolutions\Exceptions;
 
 use Exception;
 
-class RequestInvalidException extends Exception
+class ResponseInvalidException extends Exception
 {
 
 }

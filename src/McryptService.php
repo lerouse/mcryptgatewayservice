@@ -2,13 +2,16 @@
 
 namespace MBLSolutions;
 
-use Exception;
 use GuzzleHttp\Psr7\Response;
-use MBLSolutions\Exceptions\RequestInvalidException;
+use MBLSolutions\Exceptions\ResponseInvalidException;
 use MBLSolutions\Traits\HandleBase64;
 use GuzzleHttp\Client as GuzzleClient;
 use MBLSolutions\Traits\HandleJsonDecode;
 
+/**
+ * Class McryptService
+ * @package MBLSolutions
+ */
 class McryptService
 {
     use HandleBase64, HandleJsonDecode;
@@ -39,11 +42,11 @@ class McryptService
      *
      * @param string $data
      * @param string $secret
-     * @return string|null
-     * @throws RequestInvalidException
+     * @return string
+     * @throws ResponseInvalidException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function decrypt(string $data, string $secret) :? string
+    public function decrypt(string $data, string $secret): string
     {
         $response = $this->makeGetRequest($data, $secret);
 
@@ -55,11 +58,11 @@ class McryptService
      *
      * @param string $data
      * @param string $secret
-     * @return null|string
-     * @throws RequestInvalidException
+     * @return string
+     * @throws ResponseInvalidException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function encrypt(string $data, string $secret) :? string
+    public function encrypt(string $data, string $secret): string
     {
         $response = $this->makePostRequest($data, $secret);
 
@@ -71,14 +74,12 @@ class McryptService
      *
      * @param string $data
      * @param string $secret
-     * @return array
+     * @return Response
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    private function makeGetRequest(string $data, string $secret) : array
+    private function makeGetRequest(string $data, string $secret): Response
     {
-        $response = $this->getGuzzleClient()->request('GET', "/{$this->stage}?data={$data}&secret={$secret}", []);
-
-        return $this->handleResponse($response);
+        return $this->getGuzzleClient()->request('GET', "/{$this->stage}?data={$data}&secret={$secret}", []);
     }
 
     /**
@@ -86,24 +87,22 @@ class McryptService
      *
      * @param string $data
      * @param string $secret
-     * @return array
+     * @return Response
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    private function makePostRequest(string $data, string $secret) : array
+    private function makePostRequest(string $data, string $secret): Response
     {
         $request = [
-            'headers'  => [
+            'headers' => [
                 'Content-Type' => 'application/json'
             ],
             'json' => [
                 'data' => $data,
-                'secret' => $secret
+                'secret' => $secret,
             ]
         ];
 
-        $response = $this->getGuzzleClient()->request('POST', "/{$this->stage}", $request);
-
-        return $this->handleResponse($response);
+        return $this->getGuzzleClient()->request('POST', "/{$this->stage}", $request);
     }
 
     /**
@@ -111,48 +110,39 @@ class McryptService
      *
      * @return GuzzleClient
      */
-    private function getGuzzleClient() : GuzzleClient
+    private function getGuzzleClient(): GuzzleClient
     {
-        if ( is_null($this->client) ) {
-            $this->client = new GuzzleClient(['base_uri' => $this->endpoint]);
+        if ($this->client === null) {
+            $this->client = new GuzzleClient([
+                'base_uri' => $this->endpoint,
+                'http_errors' => false,
+            ]);
         }
 
         return $this->client;
     }
 
     /**
-     * Handle Guzzle Http Response
+     * Validate and return the expected response data or exception
      *
      * @param Response $response
-     * @return array
-     */
-    private function handleResponse(Response $response) : array
-    {
-        $contents = $response->getBody()->getContents();
-
-        return $this->decodeJson($contents);
-    }
-
-    /**
-     * Validate and return the expected response data
-     *
-     * @param array $response
      * @param string $key
      * @return string
-     * @throws RequestInvalidException
-     * @throws Exception
+     * @throws ResponseInvalidException
      */
-    public function getResponse(array $response, string $key = 'data') : string
+    public function getResponse(Response $response, string $key = 'data'): string
     {
-        if ( isset($response['error']) ) {
-            throw new RequestInvalidException($response['error']);
+        $originalResponse = json_decode($response->getBody()->getContents(), true);
+
+        if ($response->getStatusCode() !== 200) {
+            throw new ResponseInvalidException($originalResponse['error'] ?? $response->getReasonPhrase());
         }
 
-        if ( !isset($response[$key]) ) {
-            throw new Exception("Response Missing Expected Key: `{$key}`");
+        if (!isset($originalResponse[$key])) {
+            throw new ResponseInvalidException('Could not find index ' . $key);
         }
 
-        return $response[$key];
+        return $originalResponse[$key];
     }
 
 }
