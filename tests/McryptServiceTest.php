@@ -32,7 +32,9 @@ class McryptServiceTest extends TestCase
     /** @test */
     public function response_containing_error_throws_validation_exception()
     {
+        var_dump($_ENV);
         var_dump(getenv('MCRYPT_GATEWAY_ENDPOINT'));
+
         $this->expectException(ResponseInvalidException::class);
 
         $encrypted = '0sQg7vz6S9g='; // password
