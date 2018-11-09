@@ -107,7 +107,7 @@ class McryptService
      * @return Response
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    private function makePostRequest(string $data, string $secret, string $iv): Response
+    private function makePostRequest(string $data, string $secret, string $iv = null): Response
     {
          $jsonData = [
             'data' => $data,
