@@ -42,13 +42,14 @@ class McryptService
      *
      * @param string $data
      * @param string $secret
+     * @param string $iv
      * @return string
      * @throws ResponseInvalidException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function decrypt(string $data, string $secret): string
+    public function decrypt(string $data, string $secret, string $iv = null): string
     {
-        $response = $this->makeGetRequest($data, $secret);
+        $response = $this->makeGetRequest($data, $secret, $iv);
 
         return $this->getResponse($response, 'data');
     }
@@ -58,13 +59,14 @@ class McryptService
      *
      * @param string $data
      * @param string $secret
+     * @param string|null $iv
      * @return string
      * @throws ResponseInvalidException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function encrypt(string $data, string $secret): string
+    public function encrypt(string $data, string $secret, string $iv = null): string
     {
-        $response = $this->makePostRequest($data, $secret);
+        $response = $this->makePostRequest($data, $secret, $iv);
 
         return $this->getResponse($response, 'data');
     }
@@ -74,12 +76,26 @@ class McryptService
      *
      * @param string $data
      * @param string $secret
+     * @param string|null $iv
      * @return Response
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    private function makeGetRequest(string $data, string $secret): Response
+    private function makeGetRequest(string $data, string $secret, string $iv = null): Response
     {
-        return $this->getGuzzleClient()->request('GET', "/{$this->stage}?data={$data}&secret={$secret}", []);
+        $queryString = [
+            'data' => $data,
+            'secret' => $secret,
+        ];
+
+        if ($iv !== null) {
+            $queryString['iv'] = $iv;
+        }
+
+        return $this->getGuzzleClient()->request(
+            'GET',
+            '/' . $this->stage . '?' . http_build_query($queryString, '', '&amp;'),
+            []
+        );
     }
 
     /**
@@ -87,22 +103,29 @@ class McryptService
      *
      * @param string $data
      * @param string $secret
+     * @param string $iv
      * @return Response
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    private function makePostRequest(string $data, string $secret): Response
+    private function makePostRequest(string $data, string $secret, string $iv): Response
     {
+         $jsonData = [
+            'data' => $data,
+            'secret' => $secret,
+        ];
+
+        if ($iv !== null) {
+            $jsonData['iv'] = $iv;
+        }
+
         $request = [
             'headers' => [
                 'Content-Type' => 'application/json'
             ],
-            'json' => [
-                'data' => $data,
-                'secret' => $secret,
-            ]
+            'json' => $jsonData
         ];
 
-        return $this->getGuzzleClient()->request('POST', "/{$this->stage}", $request);
+        return $this->getGuzzleClient()->request('POST', '/'.$this->stage, $request);
     }
 
     /**
