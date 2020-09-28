@@ -1,3 +1,7 @@
+## v1.2.0
+
++ Bump GuzzleHTTP version
+
 ## v1.1.2
 
 + Remove ext-http requirement from composer.json
